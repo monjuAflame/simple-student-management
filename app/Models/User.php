@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -18,9 +19,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'phone',
         'email',
+        'avatar',
         'password',
+        'role_id',
+        'creator_id',
+        'status'
     ];
 
     /**
@@ -42,4 +49,38 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function roleList(): array
+    {
+        $role_id = Auth::user()->role_id;
+        if ($role_id == self::ADMIN) {
+            return [
+                2 => 'Author',
+                3 => 'Student',
+            ];
+        }
+        if ($role_id == self::AUTHOR) {
+            return [
+                3 => 'Student',
+            ];
+        }
+
+        return [];
+    }
+
+    public const ADMIN = 1;
+    public const AUTHOR = 2;
+    public const STUDENT = 3;
+
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'enrolments', 'user_id', 'course_id')
+            ->withTimestamps()
+            ->withPivot(['id', 'admission_type', 'discount']);
+    }
+
+    public function enrolments()
+    {
+        return $this->hasMany(Enrolment::class, 'user_id');
+    }
 }
