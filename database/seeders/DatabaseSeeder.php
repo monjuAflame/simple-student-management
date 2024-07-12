@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -43,6 +44,17 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10),
             'role_id' => User::AUTHOR,
             'status' => true,
+        ]);
+
+        Course::create([
+            'name' => 'HSC 2024 ENG',
+            'code' => 'HSC_2024',
+            'fee' => '6000',
+        ]);
+        Course::create([
+            'name' => 'HSC 2024 BAN',
+            'code' => 'HSC_2024',
+            'fee' => '6000',
         ]);
     }
 }

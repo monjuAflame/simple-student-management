@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Exception;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -82,5 +84,23 @@ class User extends Authenticatable
     public function enrolments()
     {
         return $this->hasMany(Enrolment::class, 'user_id');
+    }
+
+    public static function createNew($data)
+    {
+        try {
+            return User::create([
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'password' => Hash::make($data['password']),
+                'role_id' => User::STUDENT,
+                'status' => true,
+            ]);
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return null;
+        }
     }
 }

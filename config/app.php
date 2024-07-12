@@ -5,6 +5,10 @@ use Illuminate\Support\ServiceProvider;
 
 return [
 
+    'version' => env('APP_VERSION', "1.0.0"),
+
+    'id_prefix' => env('ID_PREFIX', 'SM'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
