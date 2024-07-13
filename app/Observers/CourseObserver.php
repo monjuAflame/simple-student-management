@@ -10,9 +10,9 @@ class CourseObserver
     /**
      * Handle the User "creating" event.
      */
-    public function creating(User $user): void
+    public function creating(Course $course): void
     {
-        $user->creator_id = auth()->check() ? auth()->id() : null;
+        $course->creator_id = auth()->check() ? auth()->id() : null;
     }
     /**
      * Handle the Course "created" event.

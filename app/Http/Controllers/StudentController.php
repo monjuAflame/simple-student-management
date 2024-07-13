@@ -9,7 +9,7 @@ use App\Models\Student;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Course;
-
+use App\Services\PaymentService;
 
 class StudentController extends Controller
 {
@@ -56,6 +56,10 @@ class StudentController extends Controller
                 'discount' => 0,
             ]);
 
+            foreach ($user->enrolments as $value) {
+                (new PaymentService)->store($value, $user->id);
+            }
+
             return redirect()->route('students.index')->with(['message' => 'Student Successfully Created!']);
         } catch (Exception $e) {
             logger($e->getMessage());
@@ -68,7 +72,14 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        //
+        $student->load([
+            'user',
+            'user.enrolments',
+            'user.enrolments.course',
+            'user.enrolments.payment',
+            'user.enrolments.payment.paymentLogs',
+        ]);
+        return view('student.view', compact('student'));
     }
 
     /**

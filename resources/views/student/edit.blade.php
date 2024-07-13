@@ -52,7 +52,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @csrf
+            
             <div class="flex flex-col gap-4">
                 
                 <form method="POST" action="{{ route('students.update', $student->id) }}">

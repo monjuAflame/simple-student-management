@@ -75,6 +75,15 @@ class User extends Authenticatable
     public const AUTHOR = 2;
     public const STUDENT = 3;
 
+    function getRoleNameAttribute(): ?string
+    {
+        return [
+            self::ADMIN => 'Admin',
+            self::AUTHOR => 'Author',
+            self::STUDENT => 'Student',
+        ][$this->role_id] ?? null;
+    }
+
     public function enrolledCourses()
     {
         return $this->belongsToMany(Course::class, 'enrolments', 'user_id', 'course_id')
@@ -92,9 +101,6 @@ class User extends Authenticatable
         return $this->hasMany(Enrolment::class, 'user_id');
     }
 
-    /**
-     * Scope a query to only include popular users.
-     */
     public function scopeActive(Builder $query): void
     {
         $query->where('status', 1);
