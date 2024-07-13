@@ -5,6 +5,7 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Student extends Model
 {
@@ -17,19 +18,23 @@ class Student extends Model
         'user_id',
     ];
 
-    public static function createNew($data, User $user)
+    public function user(): BelongsTo
     {
-        try {
-            return Student::create([
-                'user_id' => $user['id'],
-                'gender' => $data['gender'],
-                'dob' => $data['dob'],
-                'student_id' => config('app.id_prefix') . (Student::count() + 1),
-                'address' => $data['address'],
-            ]);
-        } catch (Exception $e) {
-            logger($e->getMessage());
-            return null;
-        }
+        return $this->belongsTo(User::class);
+    }
+
+    public function enrolments(): BelongsTo
+    {
+        return $this->user->enrolments;
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->user?->first_name . ' ' . $this->user?->last_name ?? '';
+    }
+
+    public function enrolmentCourseIDs()
+    {
+        return $this->user->enrolments->pluck('course_id')->toArray();
     }
 }

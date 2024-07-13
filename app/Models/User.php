@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -81,26 +82,26 @@ class User extends Authenticatable
             ->withPivot(['id', 'admission_type', 'discount']);
     }
 
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
+
     public function enrolments()
     {
         return $this->hasMany(Enrolment::class, 'user_id');
     }
 
-    public static function createNew($data)
+    /**
+     * Scope a query to only include popular users.
+     */
+    public function scopeActive(Builder $query): void
     {
-        try {
-            return User::create([
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'password' => Hash::make($data['password']),
-                'role_id' => User::STUDENT,
-                'status' => true,
-            ]);
-        } catch (Exception $e) {
-            logger($e->getMessage());
-            return null;
-        }
+        $query->where('status', 1);
+    }
+
+    public function status(): void
+    {
+        $this->staus == 1 ? 'Active' : 'Deactive';
     }
 }

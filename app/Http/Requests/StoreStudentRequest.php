@@ -29,7 +29,7 @@ class StoreStudentRequest extends FormRequest
             'last_name' => ['nullable', 'string', 'max:60'],
             'phone' => ['nullable',  Rule::unique(User::class)],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)],
-            'course_id' => ['required', 'numeric'],
+            'course_id' => ['required', 'array'],
             'gender' => ['required', 'string', Rule::in(['male', 'female'])],
             'dob' => ['nullable', 'date'],
             'password' => ['required', 'min:6', 'confirmed'],
