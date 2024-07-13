@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Course;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
@@ -13,7 +14,9 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //
+        $courses = Course::select('id', 'name', 'code', 'fee', 'course_type', 'status')
+            ->get();
+        return view('course.index', compact('courses'));
     }
 
     /**
@@ -21,7 +24,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        //
+        return view('course.create');
     }
 
     /**
@@ -29,7 +32,14 @@ class CourseController extends Controller
      */
     public function store(StoreCourseRequest $request)
     {
-        //
+        try {
+            Course::create($request->validated());
+
+            return redirect()->route('courses.index')->with(['message' => 'Course Successfully Created!']);
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return $this->returnFailedResponse();
+        }
     }
 
     /**
@@ -45,7 +55,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        //
+        return view('course.edit', compact('course'));
     }
 
     /**
@@ -53,7 +63,20 @@ class CourseController extends Controller
      */
     public function update(UpdateCourseRequest $request, Course $course)
     {
-        //
+        $data = $request->validated();
+        try {
+
+            $course->name = $data['name'];
+            $course->code = $data['code'];
+            $course->fee = $data['fee'];
+            $course->save();
+
+
+            return redirect()->route('courses.index')->with(['message' => 'Course Successfully Updated!']);
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return $this->returnFailedResponse();
+        }
     }
 
     /**
@@ -61,6 +84,13 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        //
+        try {
+            $course->delete();
+
+            return redirect()->back()->with(['message' => 'Course Successfully Deleted!']);
+        } catch (Exception $e) {
+            logger($e->getMessage());
+            return $this->returnFailedResponse();
+        }
     }
 }
