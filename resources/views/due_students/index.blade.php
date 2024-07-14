@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Course List') }}
+            {{ __('Due List') }}
         </h2>
         
-        <x-nav-link-button :href="route('courses.create')" >
-            {{ __('Create Course') }}
+        <x-nav-link-button :href="route('students.create')" >
+            {{ __('Create Student') }}
         </x-nav-link-button>
     </x-slot>
 
