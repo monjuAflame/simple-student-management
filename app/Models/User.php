@@ -5,12 +5,15 @@ namespace App\Models;
 use Exception;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
@@ -84,19 +87,19 @@ class User extends Authenticatable
         ][$this->role_id] ?? null;
     }
 
-    public function enrolledCourses()
+    public function enrolledCourses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'enrolments', 'user_id', 'course_id')
             ->withTimestamps()
             ->withPivot(['id', 'admission_type', 'discount']);
     }
 
-    public function student()
+    public function student(): HasOne
     {
         return $this->hasOne(Student::class);
     }
 
-    public function enrolments()
+    public function enrolments(): HasMany
     {
         return $this->hasMany(Enrolment::class, 'user_id');
     }

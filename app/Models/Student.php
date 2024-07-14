@@ -33,7 +33,7 @@ class Student extends Model
         return $this->user?->first_name . ' ' . $this->user?->last_name ?? '';
     }
 
-    public function enrolmentCourseIDs()
+    public function enrolmentCourseIDs(): array
     {
         return $this->user->enrolments->pluck('course_id')->toArray();
     }
